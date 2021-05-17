@@ -3,19 +3,27 @@ use array.Array
 use int.Int
 use int.MinMax
 use ref.Ref
+use export array.Array
+use export array.ArraySum
 
- 
+predicate minimumsum (b: array int) (limit: int) (s: int) = 
+  forall i j: int. 0 <= i <= j < limit -> sum b i (j+1) >= s 
 
-let minimumsum (b: array int) : int
+predicate minimumsumOneLimit (b: array int) (limit: int) (s: int) = 
+  forall i : int. 0 <= i < limit-> sum b i limit >= s 
+
+let minimum_sum_section (b: array int) : int
 requires{ b.length > 0}
-ensures{ true}
+ensures{ minimumsum b b.length result}
 =
   let k = ref 1 in  
   let s = ref b[0] in
   let c = ref b[0] in
     while !k < b.length do
       invariant { 1 <= !k <= b.length  }
-      invariant { true }
+      invariant { !c >= !s }
+      invariant { minimumsum b !k !s}
+      invariant { minimumsumOneLimit b !k !c }
       variant { b.length - !k }
       c:= min (!c + b[ !k ]) (b[ !k ]);
       s:= min !s !c ;
