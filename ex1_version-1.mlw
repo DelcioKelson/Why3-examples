@@ -1,0 +1,51 @@
+module Primo
+use ref.Ref
+use int.Int
+use int.ComputerDivision
+use int.Abs
+(*use number.Divisibility*)
+(*use number.Prime*)
+
+predicate prime (p: int) =
+    2 <= p /\ forall n: int. 2 <= n < p -> mod p n <> 0
+  
+let primo (n: int): bool
+    requires{ 2 <= n }
+    ensures { prime n = result }
+= 
+    let i = ref 2 in
+    let r = ref true in
+    while ((!i <= div n 2 ) && !r) do
+        invariant{ 2 <= !i  <= (div n 2) + 1 }
+        invariant{ forall j: int. 2 <= j < !i /\ !r= true -> (mod n j <> 0)}
+        invariant{ (!r= true )
+          \/ (!r = false /\ exists j: int. 2 <= j < !i /\ (mod n j = 0))}
+        variant{(div n 2) - !i}
+        r:= (mod n !i <> 0); 
+        i:= !i + 1;
+        done;
+    !r;
+
+(*
+    let i = ref 3 in
+    let r = ref ((mod n 2 <> 0) || n = 2) in
+    while ((!i <= div n 2 ) && !r) do
+        invariant{ 3 <= !i  <= (div n 2) + 2 }
+        invariant{ forall j: int. 3 <= j < !i <= (div n 2) /\ !r= true -> (mod n j <> 0)}
+        invariant{ (!r= true )
+          \/ (!r = false /\ exists j: int. 2 <= j < !i /\ (mod n j = 0))}
+        variant{(div n 2) - !i}
+        r:= (mod n !i <> 0); 
+        i:= !i + 2;
+    done;
+    !r;
+
+
+
+1) i = 2 | i*i = 4
+2) i = 3 | i*i = 9
+3) i = 4 | i*i = 16
+4) i = 5 | i*i = 25
+*)
+
+end

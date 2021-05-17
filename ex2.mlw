@@ -1,0 +1,26 @@
+module MinimumSum
+use array.Array
+use int.Int
+use int.MinMax
+use ref.Ref
+
+ 
+
+let minimumsum (b: array int) : int
+requires{ b.length > 0}
+ensures{ true}
+=
+  let k = ref 1 in  
+  let s = ref b[0] in
+  let c = ref b[0] in
+    while !k < b.length do
+      invariant { 1 <= !k <= b.length  }
+      invariant { true }
+      variant { b.length - !k }
+      c:= min (!c + b[ !k ]) (b[ !k ]);
+      s:= min !s !c ;
+      k:= !k + 1;
+    done;
+    !s
+
+end
